@@ -1,0 +1,18 @@
+---
+title: "Mandy's Website"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+# This is Mandy's website
+
+## Introduction
+Hello! This is a website I have created about me for my P8105 data science class.
+
+* If you are interested in learning more about my academic and professional experience, click on [About Me](about.html).
+
+* If you are interested in seeing some example plots I can create using plotly, click on [Example Plots](exampleplots.html).
+
+
