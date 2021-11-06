@@ -6,8 +6,6 @@ output:
     toc_float: true
 ---
 
-# This is Mandy's website
-
 ## Introduction
 Hello! This is a website I have created about me for my P8105 data science class.
 
