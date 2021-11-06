@@ -35,6 +35,13 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0.9000/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -363,6 +370,315 @@ div.tocify {
 <p>This page has shows some examples of plots I can create using plotly.</p>
 <div id="examples-of-plotly" class="section level1">
 <h1>Examples of Plotly</h1>
+<div id="initial-set-up" class="section level2">
+<h2>Initial Set-Up</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.5     v purrr   0.3.4
+## v tibble  3.1.4     v dplyr   1.0.7
+## v tidyr   1.1.4     v stringr 1.4.0
+## v readr   2.0.2     v forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(dplyr)
+library(p8105.datasets)
+library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+</div>
+<div id="loading-and-cleaning-data" class="section level2">
+<h2>Loading and Cleaning Data</h2>
+<pre class="r"><code>data(instacart)
+
+skimr::skim(instacart)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">instacart</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">1384617</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">15</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">4</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">11</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">eval_set</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">product_name</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">159</td>
+<td align="right">0</td>
+<td align="right">39123</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">aisle</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">29</td>
+<td align="right">0</td>
+<td align="right">134</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">department</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">15</td>
+<td align="right">0</td>
+<td align="right">21</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">order_id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1706297.62</td>
+<td align="right">989732.65</td>
+<td align="right">1</td>
+<td align="right">843370</td>
+<td align="right">1701880</td>
+<td align="right">2568023</td>
+<td align="right">3421070</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">product_id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">25556.24</td>
+<td align="right">14121.27</td>
+<td align="right">1</td>
+<td align="right">13380</td>
+<td align="right">25298</td>
+<td align="right">37940</td>
+<td align="right">49688</td>
+<td align="left">▆▆▇▆▇</td>
+</tr>
+<tr class="odd">
+<td align="left">add_to_cart_order</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">8.76</td>
+<td align="right">7.42</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">7</td>
+<td align="right">12</td>
+<td align="right">80</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">reordered</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.60</td>
+<td align="right">0.49</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">▆▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">user_id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">103112.78</td>
+<td align="right">59487.15</td>
+<td align="right">1</td>
+<td align="right">51732</td>
+<td align="right">102933</td>
+<td align="right">154959</td>
+<td align="right">206209</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">order_number</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">17.09</td>
+<td align="right">16.61</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">11</td>
+<td align="right">21</td>
+<td align="right">100</td>
+<td align="left">▇▂▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">order_dow</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2.70</td>
+<td align="right">2.17</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">5</td>
+<td align="right">6</td>
+<td align="left">▇▂▂▂▆</td>
+</tr>
+<tr class="even">
+<td align="left">order_hour_of_day</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">13.58</td>
+<td align="right">4.24</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">14</td>
+<td align="right">17</td>
+<td align="right">23</td>
+<td align="left">▁▃▇▇▃</td>
+</tr>
+<tr class="odd">
+<td align="left">days_since_prior_order</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">17.07</td>
+<td align="right">10.43</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">15</td>
+<td align="right">30</td>
+<td align="right">30</td>
+<td align="left">▅▅▃▂▇</td>
+</tr>
+<tr class="even">
+<td align="left">aisle_id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">71.30</td>
+<td align="right">38.10</td>
+<td align="right">1</td>
+<td align="right">31</td>
+<td align="right">83</td>
+<td align="right">107</td>
+<td align="right">134</td>
+<td align="left">▆▃▃▇▆</td>
+</tr>
+<tr class="odd">
+<td align="left">department_id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">9.84</td>
+<td align="right">6.29</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">8</td>
+<td align="right">16</td>
+<td align="right">21</td>
+<td align="left">▇▂▂▅▂</td>
+</tr>
+</tbody>
+</table>
+<p>#Filtering instacart data to the 10 most popular aisles</p>
+<pre class="r"><code>instacart_df = instacart %&gt;%
+  filter(aisle %in% c(&quot;fresh vegetables&quot;, &quot;fresh fruits&quot;, &quot;packaged vegetables fruits&quot;,  &quot;yogurt&quot;, &quot;packaged cheese&quot;, &quot;water seltzer sparkling water&quot;, &quot;milk&quot;, &quot;chips pretzels&quot;,  &quot;soy lactosefree&quot;))</code></pre>
+</div>
+</div>
+<div id="first-plot" class="section level1">
+<h1>First Plot</h1>
+<pre class="r"><code>instacart_df %&gt;% 
+  group_by(aisle) %&gt;%
+  summarize(n = n()) %&gt;%
+  mutate(
+    aisle = as.factor(aisle),
+    aisle = fct_reorder(aisle, n)
+  ) %&gt;%
+  plot_ly(x = ~aisle, y = ~n, color = ~aisle, type = &quot;bar&quot;, colors = &quot;viridis&quot;)</code></pre>
+<div id="htmlwidget-d7ec87d0ca0f9b29762f" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d7ec87d0ca0f9b29762f">{"x":{"visdat":{"1b05d55e2":["function () ","plotlyVisDat"]},"cur_data":"1b05d55e2","attrs":{"1b05d55e2":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"xaxis":{"domain":[0,1],"automargin":true,"title":"aisle","type":"category","categoryorder":"array","categoryarray":["soy lactosefree","chips pretzels","milk","water seltzer sparkling water","packaged cheese","yogurt","packaged vegetables fruits","fresh fruits","fresh vegetables"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"n"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["soy lactosefree"],"y":[26240],"type":"bar","name":"soy lactosefree","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["chips pretzels"],"y":[31269],"type":"bar","name":"chips pretzels","marker":{"color":"rgba(71,45,123,1)","line":{"color":"rgba(71,45,123,1)"}},"textfont":{"color":"rgba(71,45,123,1)"},"error_y":{"color":"rgba(71,45,123,1)"},"error_x":{"color":"rgba(71,45,123,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["milk"],"y":[32644],"type":"bar","name":"milk","marker":{"color":"rgba(59,82,139,1)","line":{"color":"rgba(59,82,139,1)"}},"textfont":{"color":"rgba(59,82,139,1)"},"error_y":{"color":"rgba(59,82,139,1)"},"error_x":{"color":"rgba(59,82,139,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["water seltzer sparkling water"],"y":[36617],"type":"bar","name":"water seltzer sparkling water","marker":{"color":"rgba(44,114,142,1)","line":{"color":"rgba(44,114,142,1)"}},"textfont":{"color":"rgba(44,114,142,1)"},"error_y":{"color":"rgba(44,114,142,1)"},"error_x":{"color":"rgba(44,114,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["packaged cheese"],"y":[41699],"type":"bar","name":"packaged cheese","marker":{"color":"rgba(33,144,141,1)","line":{"color":"rgba(33,144,141,1)"}},"textfont":{"color":"rgba(33,144,141,1)"},"error_y":{"color":"rgba(33,144,141,1)"},"error_x":{"color":"rgba(33,144,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["yogurt"],"y":[55240],"type":"bar","name":"yogurt","marker":{"color":"rgba(39,173,129,1)","line":{"color":"rgba(39,173,129,1)"}},"textfont":{"color":"rgba(39,173,129,1)"},"error_y":{"color":"rgba(39,173,129,1)"},"error_x":{"color":"rgba(39,173,129,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["packaged vegetables fruits"],"y":[78493],"type":"bar","name":"packaged vegetables fruits","marker":{"color":"rgba(93,200,99,1)","line":{"color":"rgba(93,200,99,1)"}},"textfont":{"color":"rgba(93,200,99,1)"},"error_y":{"color":"rgba(93,200,99,1)"},"error_x":{"color":"rgba(93,200,99,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["fresh fruits"],"y":[150473],"type":"bar","name":"fresh fruits","marker":{"color":"rgba(170,220,50,1)","line":{"color":"rgba(170,220,50,1)"}},"textfont":{"color":"rgba(170,220,50,1)"},"error_y":{"color":"rgba(170,220,50,1)"},"error_x":{"color":"rgba(170,220,50,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["fresh vegetables"],"y":[150609],"type":"bar","name":"fresh vegetables","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 
 
