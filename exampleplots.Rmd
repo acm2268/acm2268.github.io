@@ -23,7 +23,7 @@ instacart_df = instacart %>%
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Total Number of Orders for the 10 Most Popular Aisles
 
 ```{r charta}
 
@@ -35,9 +35,7 @@ instacart_df %>%
     aisle = fct_reorder(aisle, n)
   ) %>%
   plot_ly(x = ~aisle, y = ~n, color = ~aisle, type = "bar", colors = "viridis") %>%
-    layout(
-    title = 'Total Number of Orders for the 10 Most Popular Aisles', 
-    xaxis = list(title = 'Aisle'),
+    layout(xaxis = list(title = 'Aisle'),
     yaxis = list(title = 'Number of Orders'))
 
 
@@ -46,15 +44,10 @@ instacart_df %>%
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Distribution of Order Times by Aisle
 
 ```{r chartb}
 
-
-data(instacart)
-
-instacart_df = instacart %>%
-  filter(aisle %in% c("fresh vegetables", "fresh fruits", "packaged vegetables fruits",  "yogurt", "packaged cheese", "water seltzer sparkling water", "milk", "chips pretzels",  "soy lactosefree"))
 
 instacart_df %>%
   filter(product_name %in% c("Baby Brie", "Cheddar Cheese", "Arugula")) %>%
@@ -62,15 +55,12 @@ instacart_df %>%
           color = ~product_name, 
           type = "box", 
           colors = "viridis") %>% 
-  layout(
-    title = 'Distribution of Order Times by Aisle', 
-    xaxis = list(title = 'Order Day of Week'),
-    yaxis = list(title = 'Order Hour of Day', range = c(0,24)))
+  layout(yaxis = list(title = 'Hour', range = c(0,24)))
 
 
 ```
 
-### Chart C
+### Days From Last Order vs Order Hour
 
 ```{r chartc}
 
@@ -79,10 +69,8 @@ instacart_df %>%
   plot_ly(
   x = ~days_since_prior_order, y = ~order_hour_of_day, type = "scatter", mode = "markers",
   color = ~product_name) %>%
-    layout(
-    title = 'Scatterplot of Days Since Prior Order vs Order Hour of Day', 
-    xaxis = list(title = 'Days Since Prior Order'),
-    yaxis = list(title = 'Order Hour of Day', range = c(0,24)))
+    layout(xaxis = list(title = 'Days Since Prior Order'),
+    yaxis = list(title = 'Hour', range = c(0,24)))
 
 ```
 
