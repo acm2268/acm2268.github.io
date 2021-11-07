@@ -74,8 +74,6 @@ instacart_df %>%
 
 ```{r chartc}
 
-instacart_df %>% tail()
-
 instacart_df %>%
   filter(product_name %in% c("Baby Brie", "Cheese, Asiago")) %>%
   plot_ly(
