@@ -88,9 +88,4 @@ instacart_df %>%
 
 ```
 
-```{r}
-
-rmarkdown::render("dashboard_template.Rmd", output_format = "flexdashboard::flex_dashboard")
-
-```
 
