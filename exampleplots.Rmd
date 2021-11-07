@@ -1,46 +1,31 @@
 ---
 title: "Example Plots"
 output: 
-  html_document:
-    toc: true
-    toc_float: true
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
 ---
 
-This page has shows some examples of plots I can create using plotly.
-
-# Examples of Plotly
-
-## Initial Set-Up
-
-```{r libraries}
-
+```{r setup, include=FALSE}
+library(flexdashboard)
 library(tidyverse)
 library(dplyr)
 library(p8105.datasets)
 library(plotly)
 
-```
-
-## Loading and Cleaning Data
-
-```{r}
-
 data(instacart)
-
-```
-
-#Filtering instacart data to the 10 most popular aisles
-
-```{r}
 
 instacart_df = instacart %>%
   filter(aisle %in% c("fresh vegetables", "fresh fruits", "packaged vegetables fruits",  "yogurt", "packaged cheese", "water seltzer sparkling water", "milk", "chips pretzels",  "soy lactosefree"))
 
 ```
 
-# First Plot
+Column {data-width=650}
+-----------------------------------------------------------------------
 
-```{r}
+### Chart A
+
+```{r charta}
 
 instacart_df %>% 
   group_by(aisle) %>%
@@ -49,50 +34,63 @@ instacart_df %>%
     aisle = as.factor(aisle),
     aisle = fct_reorder(aisle, n)
   ) %>%
-  plot_ly(x = ~aisle, y = ~n, color = ~aisle, type = "bar", colors = "viridis")
+  plot_ly(x = ~aisle, y = ~n, color = ~aisle, type = "bar", colors = "viridis") %>%
+    layout(
+    title = 'Total Number of Orders for the 10 Most Popular Aisles', 
+    xaxis = list(title = 'Aisle'),
+    yaxis = list(title = 'Number of Orders'))
+
 
 ```
 
-# Plot 2
+Column {data-width=350}
+-----------------------------------------------------------------------
 
-```{r}
+### Chart B
 
-instacart_df %>% 
-  mutate(
-    order_dow = as.factor(as.character(order_dow)),
-    order_dow = fct_recode(order_dow, 
-                           "Sunday" = "0", 
-                           "Monday" = "1", 
-                           "Tuesday" = "2", 
-                           "Wednesday" = "3", 
-                           "Thursday" = "4", 
-                           "Friday" = "5", 
-                           "Saturday" = "6")) %>%
-  filter(product_name == "Baby Swiss Cheese") %>% 
+```{r chartb}
+
+
+data(instacart)
+
+instacart_df = instacart %>%
+  filter(aisle %in% c("fresh vegetables", "fresh fruits", "packaged vegetables fruits",  "yogurt", "packaged cheese", "water seltzer sparkling water", "milk", "chips pretzels",  "soy lactosefree"))
+
+instacart_df %>%
+  filter(product_name %in% c("Baby Brie", "Cheddar Cheese", "Arugula")) %>%
   plot_ly(y = ~order_hour_of_day, 
-          color = ~order_dow, 
+          color = ~product_name, 
           type = "box", 
           colors = "viridis") %>% 
   layout(
-    title = 'Distribution of Order Times for String Cheese by Day of Week', 
+    title = 'Distribution of Order Times by Aisle', 
     xaxis = list(title = 'Order Day of Week'),
+    yaxis = list(title = 'Order Hour of Day', range = c(0,24)))
+
+
+```
+
+### Chart C
+
+```{r chartc}
+
+instacart_df %>% tail()
+
+instacart_df %>%
+  filter(product_name %in% c("Baby Brie", "Cheese, Asiago")) %>%
+  plot_ly(
+  x = ~days_since_prior_order, y = ~order_hour_of_day, type = "scatter", mode = "markers",
+  color = ~product_name) %>%
+    layout(
+    title = 'Scatterplot of Days Since Prior Order vs Order Hour of Day', 
+    xaxis = list(title = 'Days Since Prior Order'),
     yaxis = list(title = 'Order Hour of Day', range = c(0,24)))
 
 ```
 
-
 ```{r}
 
-instacart_df %>% filter(aisle == "packaged cheese") %>%
-  group_by(product_name) %>%
-  summarize(
-    n = n()
-  )
-
-
+rmarkdown::render("dashboard_template.Rmd", output_format = "flexdashboard::flex_dashboard")
 
 ```
-
-
-
 
