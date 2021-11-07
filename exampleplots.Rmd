@@ -27,8 +27,6 @@ library(plotly)
 
 data(instacart)
 
-skimr::skim(instacart)
-
 ```
 
 #Filtering instacart data to the 10 most popular aisles
@@ -55,6 +53,45 @@ instacart_df %>%
 
 ```
 
+# Plot 2
+
+```{r}
+
+instacart_df %>% 
+  mutate(
+    order_dow = as.factor(as.character(order_dow)),
+    order_dow = fct_recode(order_dow, 
+                           "Sunday" = "0", 
+                           "Monday" = "1", 
+                           "Tuesday" = "2", 
+                           "Wednesday" = "3", 
+                           "Thursday" = "4", 
+                           "Friday" = "5", 
+                           "Saturday" = "6")) %>%
+  filter(product_name == "Baby Swiss Cheese") %>% 
+  plot_ly(y = ~order_hour_of_day, 
+          color = ~order_dow, 
+          type = "box", 
+          colors = "viridis") %>% 
+  layout(
+    title = 'Distribution of Order Times for String Cheese by Day of Week', 
+    xaxis = list(title = 'Order Day of Week'),
+    yaxis = list(title = 'Order Hour of Day', range = c(0,24)))
+
+```
+
+
+```{r}
+
+instacart_df %>% filter(aisle == "packaged cheese") %>%
+  group_by(product_name) %>%
+  summarize(
+    n = n()
+  )
+
+
+
+```
 
 
 
